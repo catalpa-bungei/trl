@@ -1,3 +1,4 @@
+# accelerate launch --config_file examples/accelerate_configs/multi_gpu.yaml yxq_trial.py
 
 import json
 from datasets import load_dataset
