@@ -28,7 +28,8 @@ def preprocess_function(example):
     return {"messages": messages, "images": []}
 
 # Apply the transformation
-dataset = dataset.map(preprocess_function, remove_columns=dataset.column_names)
+train_dataset = train_dataset.map(preprocess_function, remove_columns=train_dataset.column_names)
+evaluation_dataset = evaluation_dataset.map(preprocess_function, remove_columns=evaluation_dataset.column_names)
 
 
 # 3. Setup for SFT
