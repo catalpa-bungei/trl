@@ -2,6 +2,7 @@
 import json
 from datasets import load_dataset
 from trl import SFTTrainer, SFTConfig
+from peft import LoraConfig
 from transformers import AutoModelForCausalLM, AutoProcessor
 
 # 1. Load the dataset
@@ -44,8 +45,18 @@ sft_config = SFTConfig(
     logging_steps=10,
     num_train_epochs=1,
     dataset_text_field="messages", # SFTTrainer will automatically handle 'messages' column
+    gradient_checkpointing=True, # Enable gradient checkpointing to save memory
     # For VLMs, we might need to be careful with how SFTTrainer handles it.
     # Recent TRL versions support VLMs better.
+)
+
+peft_config = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM",
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
 )
 
 # Initialize Trainer
@@ -55,9 +66,10 @@ trainer = SFTTrainer(
     model=model_id,
     train_dataset=dataset,
     args=sft_config,
+    # peft_config=peft_config,
 )
 
 # 4. Train
-# trainer.train() 
+trainer.train() 
 # Commented out to avoid actual training execution during this interaction, 
 # but the file is ready for the user to run.
