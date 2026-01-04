@@ -36,10 +36,10 @@ model_id = "/mnt/shared-storage-user/yangxuqing/models/Qwen2.5VL-7B-Instruct/5b5
 # Configure SFT
 sft_config = SFTConfig(
     output_dir="./sft_output",
-    max_seq_length=1024, # Adjust as needed
+    max_length=2048, # Adjust as needed
     packing=False, # Typically False for conversational data unless handled carefully
     per_device_train_batch_size=1,
-    gradient_accumulation_steps=4,
+    gradient_accumulation_steps=8,
     learning_rate=2e-5,
     logging_steps=10,
     num_train_epochs=1,
