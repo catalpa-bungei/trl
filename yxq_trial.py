@@ -39,15 +39,19 @@ sft_config = SFTConfig(
     output_dir="./sft_output",
     max_length=2048, # Adjust as needed
     packing=False, # Typically False for conversational data unless handled carefully
-    per_device_train_batch_size=1,
+    per_device_train_batch_size=8,
     gradient_accumulation_steps=8,
     learning_rate=2e-5,
     logging_steps=10,
     num_train_epochs=1,
     dataset_text_field="messages", # SFTTrainer will automatically handle 'messages' column
     gradient_checkpointing=True, # Enable gradient checkpointing to save memory
-    # For VLMs, we might need to be careful with how SFTTrainer handles it.
-    # Recent TRL versions support VLMs better.
+    # bf16=True, # Enable bf16 mixed precision
+    eval_strategy="steps",
+    eval_steps=10,
+    # save_strategy="steps",
+    # save_steps=30,
+    # load_best_model_at_end=True,
 )
 
 peft_config = LoraConfig(
@@ -61,13 +65,13 @@ peft_config = LoraConfig(
 
 # Initialize Trainer
 # Note: For Qwen2.5-VL, we might need to pass the processor or specific formatting.
-# SFTTrainer supports 'messages' and will apply chat template.
+# SFTTrainer suppotrain_dataset,
 processor = AutoProcessor.from_pretrained(model_id)
 trainer = SFTTrainer(
     model=model_id,
     train_dataset=dataset,
     args=sft_config,
-    # peft_config=peft_config,
+    eval_dataset=dataset,
     processing_class=processor,
 )
 
