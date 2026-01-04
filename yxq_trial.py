@@ -16,7 +16,7 @@ def preprocess_function(example):
     
     messages = [
         {"role": "user", "content": example["text_prompt"]},
-        {"role": "assistant", "content": f"<ANSWER:{example['ground_truth']}|<CONFIDENCE:{int(example['avg_accuracy']*10)}>"}
+        {"role": "assistant", "content": f"<ANSWER is: \\boxed{{{example['ground_truth']}}}>|<CONFIDENCE:{int(example['avg_accuracy']*10)}>"}
     ]
     
     # If there was an image, we would handle it here, but the sampled data showed null images.
@@ -28,16 +28,10 @@ def preprocess_function(example):
 # Apply the transformation
 dataset = dataset.map(preprocess_function, remove_columns=dataset.column_names)
 
-# Print a sample to verify
-print("Sample converted data (First 5):")
-for i in range(5):
-    print(f"Sample {i}:")
-    print(dataset[i])
-    print("-" * 20)
 
 # 3. Setup for SFT
 # User mentioned Qwen2.5VL-7B. Assuming the Hugging Face model ID.
-model_id = "Qwen/Qwen2.5-VL-7B-Instruct" 
+model_id = "/mnt/shared-storage-user/yangxuqing/models/Qwen2.5VL-7B-Instruct/5b5eecc7efc2c3e86839993f2689bbbdf06bd8d4" 
 
 # Configure SFT
 sft_config = SFTConfig(
