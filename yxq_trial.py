@@ -62,11 +62,13 @@ peft_config = LoraConfig(
 # Initialize Trainer
 # Note: For Qwen2.5-VL, we might need to pass the processor or specific formatting.
 # SFTTrainer supports 'messages' and will apply chat template.
+processor = AutoProcessor.from_pretrained(model_id)
 trainer = SFTTrainer(
     model=model_id,
     train_dataset=dataset,
     args=sft_config,
     # peft_config=peft_config,
+    processing_class=processor,
 )
 
 # 4. Train
