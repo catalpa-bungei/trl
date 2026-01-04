@@ -42,19 +42,20 @@ sft_config = SFTConfig(
     output_dir="./sft_output",
     max_length=2048, # Adjust as needed
     packing=False, # Typically False for conversational data unless handled carefully
-    per_device_train_batch_size=128,
+    per_device_train_batch_size=8,
     gradient_accumulation_steps=8,
     learning_rate=2e-5,
     logging_steps=10,
     num_train_epochs=1,
     dataset_text_field="messages", # SFTTrainer will automatically handle 'messages' column
     gradient_checkpointing=True, # Enable gradient checkpointing to save memory
-    # bf16=True, # Enable bf16 mixed precision
+    bf16=True, # Enable bf16 mixed precision
     eval_strategy="steps",
     eval_steps=10,
     save_strategy="steps",
     save_steps=35,
     load_best_model_at_end=True,
+    model_init_kwargs={"device_map": None},
 )
 
 peft_config = LoraConfig(
