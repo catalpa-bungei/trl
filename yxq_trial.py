@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoProcessor
 
 # 1. Load the dataset
 train_dataset = load_dataset("json", data_files="/mnt/shared-storage-user/yangxuqing/post_processing/create_training_data/data/text/text_filtered_combined-shuffled-train.jsonl", split="train")
-evaluation_dataset = load_dataset("json", data_files="/mnt/shared-storage-user/yangxuqing/post_processing/create_training_data/data/text/text_filtered_combined-shuffled-test.jsonl", split="test")
+evaluation_dataset = load_dataset("json", data_files="/mnt/shared-storage-user/yangxuqing/post_processing/create_training_data/data/text/text_filtered_combined-shuffled-test.jsonl", split="train")
 
 # 2. Convert to conversational language modeling data
 def preprocess_function(example):
@@ -41,7 +41,7 @@ sft_config = SFTConfig(
     output_dir="./sft_output",
     max_length=2048, # Adjust as needed
     packing=False, # Typically False for conversational data unless handled carefully
-    per_device_train_batch_size=8,
+    per_device_train_batch_size=128,
     gradient_accumulation_steps=8,
     learning_rate=2e-5,
     logging_steps=10,
@@ -51,9 +51,9 @@ sft_config = SFTConfig(
     # bf16=True, # Enable bf16 mixed precision
     eval_strategy="steps",
     eval_steps=10,
-    # save_strategy="steps",
-    # save_steps=30,
-    # load_best_model_at_end=True,
+    save_strategy="steps",
+    save_steps=35,
+    load_best_model_at_end=True,
 )
 
 peft_config = LoraConfig(
